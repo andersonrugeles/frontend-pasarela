@@ -13,7 +13,7 @@ import {
 
 interface ProductoCardProps {
     producto: Producto;
-    onModal: (producto: Producto) => void
+    onModal: (producto: Producto, cantidad:number) => void
 }
 
 const ProductoCard: React.FC<ProductoCardProps> = ({ producto, onModal }) => {
@@ -72,7 +72,7 @@ const ProductoCard: React.FC<ProductoCardProps> = ({ producto, onModal }) => {
                             color="primary"
                             disabled={producto.stock === 0}
                             sx={{ flexGrow: 1 }}
-                            onClick={()=> onModal({...producto})}
+                        onClick={() => onModal({ ...producto }, cantidades[producto.id] ?? 1)}
                         >
                             Comprar
                         </Button>

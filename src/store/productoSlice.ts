@@ -8,7 +8,7 @@ export interface Producto {
   precio: number;
   stock: number;
   imagen?: string;
-  cantidad?:number
+  cantidad:number
 }
 
 interface ProductosState {

@@ -10,10 +10,10 @@ import {
     InputAdornment,
     Grid,
 } from '@mui/material';
-import CreditCardIcon from '@mui/icons-material/CreditCard';
 import HomeIcon from '@mui/icons-material/Home';
-
-
+import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
+import EmailIcon from '@mui/icons-material/Email';
+import PasswordIcon from '@mui/icons-material/Password';
 interface ModalPagoProps {
     isOpen: boolean;
     onClose: () => void;
@@ -24,6 +24,8 @@ export default function ModalPago({ isOpen, onClose, onConfirm }: ModalPagoProps
     const [numero, setNumero] = useState('');
     const [nombre, setNombre] = useState('');
     const [direccion, setDireccion] = useState('');
+    const [telefono, setTelefono] = useState('');
+    const [email, setEmail] = useState('');
     const [cvv, setCvv] = useState('');
     const [fecha, setFecha] = useState('');
 
@@ -34,9 +36,17 @@ export default function ModalPago({ isOpen, onClose, onConfirm }: ModalPagoProps
     //5407347968812090
     const handleConfirm = () => {
         if (!esValido || !nombre || !direccion || !cvv || !fecha) return;
-        onConfirm({ numero, nombre, direccion, cvv, fecha });
+        onConfirm({ numero, nombre, direccion, cvv, fecha, telefono,email });
         onClose();
     };
+
+    const detectarTipoTarjeta = (num: string) => {
+        if (/^4/.test(num)) return 'visa';
+        if (/^5[1-5]/.test(num) || /^2(2[2-9]|[3-6]|7[01])/.test(num)) return 'mastercard';
+        return 'unknown';
+    };
+
+    const tipo = detectarTipoTarjeta(numero.replace(/\s/g, ''));
 
     const handleCvvChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const valor = e.target.value.replace(/\D/g, '');
@@ -72,9 +82,14 @@ export default function ModalPago({ isOpen, onClose, onConfirm }: ModalPagoProps
                         value={numero}
                         onChange={(e) => setNumero(e.target.value.replace(/\D/g, '').slice(0, 16))}
                         InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <CreditCardIcon />
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    {tipo === 'visa' && (
+                                        <img src="https://img.icons8.com/color/48/000000/visa.png" className="h-6" />
+                                    )}
+                                    {tipo === 'mastercard' && (
+                                        <img src="https://img.icons8.com/color/48/000000/mastercard-logo.png" className="h-6" />
+                                    )}
                                 </InputAdornment>
                             ),
                         }}
@@ -97,7 +112,13 @@ export default function ModalPago({ isOpen, onClose, onConfirm }: ModalPagoProps
                         value={cvv}
                         onChange={handleCvvChange}
                         placeholder="123"
-                        inputProps={{ maxLength: 3 }}
+                        inputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <PasswordIcon />
+                                </InputAdornment>
+                            ), maxLength: 3
+                        }}
                     />
 
                     <TextField
@@ -114,14 +135,42 @@ export default function ModalPago({ isOpen, onClose, onConfirm }: ModalPagoProps
                         }}
                     />
 
+                     <TextField
+                        fullWidth
+                        label="Telefono"
+                        value={telefono}
+                        onChange={(e) => setTelefono(e.target.value)}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <LocalPhoneIcon />
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+
+                     <TextField
+                        fullWidth
+                        label="Correo electrónico"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <EmailIcon />
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+
                 </Grid>
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose} color="secondary">
                     Cancelar
                 </Button>
-                <Button onClick={handleConfirm} color="primary" variant="contained">
-                    Pagar
+                <Button onClick={handleConfirm} disabled={!esValido} color="primary" variant="contained">
+                    Siguiente
                 </Button>
             </DialogActions>
         </Dialog>
