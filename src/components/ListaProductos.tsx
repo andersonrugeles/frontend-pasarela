@@ -53,7 +53,6 @@ const ListaProductos: React.FC<ListaProductosProps> = ({ productos }) => {
       }, transaccion?.idCompra);
 
 
-      setModalResumen(false);
       setModalTrx(true);
       setStatusTrx(consultaTransaccion?.data?.status);
       setLoading(true);
@@ -104,6 +103,7 @@ const ListaProductos: React.FC<ListaProductosProps> = ({ productos }) => {
         idCompra: respuestaCompra.id,
         total
       });
+      setModalResumen(false);
       setModalTrx(true);
 
       setLoading(false);
