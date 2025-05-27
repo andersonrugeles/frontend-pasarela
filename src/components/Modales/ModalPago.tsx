@@ -32,7 +32,7 @@ export default function ModalPago({ isOpen, onClose, onConfirm }: ModalPagoProps
     const esVisa = /^4[0-9]{12}(?:[0-9]{3})?$/.test(numero);
     const esMastercard = /^5[1-5][0-9]{14}$/.test(numero);
 
-    const esValido = esVisa || esMastercard && !!nombre && !!direccion && !!cvv && !!fecha;
+    const esValido = (esVisa || esMastercard) && !!nombre && !!direccion && !!cvv && !!fecha  && !!email && !!telefono;
     //5407347968812090
     const handleConfirm = () => {
         if (!esValido || !nombre || !direccion || !cvv || !fecha) return;
