@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import type { Producto } from '../store/productoSlice';
 import ProductoCard from './ProductoCard';
 import ModalPago from './Modales/ModalPago';
@@ -17,6 +17,8 @@ interface ListaProductosProps {
   productos: Producto[];
 }
 
+const ProductoCardMemo = memo(ProductoCard);
+
 const ListaProductos: React.FC<ListaProductosProps> = ({ productos }) => {
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modalResumen, setModalResumen] = useState(false);
@@ -28,6 +30,9 @@ const ListaProductos: React.FC<ListaProductosProps> = ({ productos }) => {
   const [datosCliente, setDatosCliente] = useState<Cliente>(initialCliente);
   const [productoSeleccionado, setProductoSeleccionado] = useState<Producto>(initialProducto);
   const [loading, setLoading] = useState(false);
+  const handleModal = useCallback((producto: Producto, cantidad: number) => {
+    abrirModal(producto, cantidad);
+  }, []);
 
   const abrirModal = (producto: Producto, cantidad: number) => {
     setProductoSeleccionado({ ...producto, cantidad });
@@ -131,7 +136,7 @@ const ListaProductos: React.FC<ListaProductosProps> = ({ productos }) => {
       >
 
         {productos.map((producto) => (
-          <ProductoCard key={producto.id} producto={producto} onModal={(producto: Producto, cantidad: number) => abrirModal(producto, cantidad)} />
+          <ProductoCardMemo key={producto.id} producto={producto} onModal={handleModal} />
         ))}
       </Box>
       <ModalPago

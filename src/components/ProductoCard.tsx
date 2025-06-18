@@ -36,6 +36,7 @@ const ProductoCard: React.FC<ProductoCardProps> = ({ producto, onModal }) => {
                     height="160"
                     image={producto.imagen}
                     alt={producto.nombre}
+                    loading='lazy'
                     sx={{ objectFit: 'cover' }}
                 />
             )}

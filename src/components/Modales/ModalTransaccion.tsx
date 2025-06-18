@@ -14,7 +14,7 @@ interface ModalTransaccionProps {
   open: boolean;
   onClose: () => void;
   onRefrescar: () => void;
-  status:string;
+  status: string;
 }
 
 const ModalTransaccion: React.FC<ModalTransaccionProps> = ({
@@ -33,16 +33,18 @@ const ModalTransaccion: React.FC<ModalTransaccionProps> = ({
       </DialogTitle>
       <DialogContent>
         <Typography>
-          Tu transacción se encuentra en estado <strong>{status}</strong>. Puedes esperar o refrescar el estado para obtener una respuesta actualizada.
+          Tu transacción se encuentra en estado <strong>{status}</strong>. {status === 'DECLINED' ? '.' : 'Puedes esperar o refrescar el estado para obtener una respuesta actualizada.'}
         </Typography>
       </DialogContent>
       <DialogActions>
         <Button variant="outlined" onClick={onClose}>
           Cerrar
         </Button>
-        <Button variant="contained" color="primary" onClick={onRefrescar}>
-          Refrescar estado
-        </Button>
+        {status !== 'DECLINED' && (
+          <Button variant="contained" color="primary" onClick={onRefrescar}>
+            Refrescar estado
+          </Button>
+        )}
       </DialogActions>
     </Dialog>
   );
