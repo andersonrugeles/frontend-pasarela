@@ -33,3 +33,9 @@ export const initialTransaccion = {
     idCompra:'',
     total:0
 }
+
+export const statusLabels: Record<string, string> = {
+  PENDING: 'Pendiente',
+  APPROVED: 'Aprobada',
+  DECLINED: 'Declinada',
+};

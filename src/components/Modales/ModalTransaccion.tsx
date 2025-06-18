@@ -33,14 +33,14 @@ const ModalTransaccion: React.FC<ModalTransaccionProps> = ({
       </DialogTitle>
       <DialogContent>
         <Typography>
-          Tu transacción se encuentra en estado <strong>{status}</strong>. {status === 'DECLINED' ? '.' : 'Puedes esperar o refrescar el estado para obtener una respuesta actualizada.'}
+          Tu transacción se encuentra en estado <strong>{status}</strong>. {status === 'Declinada' ? '.' : 'Puedes esperar o refrescar el estado para obtener una respuesta actualizada.'}
         </Typography>
       </DialogContent>
       <DialogActions>
         <Button variant="outlined" onClick={onClose}>
           Cerrar
         </Button>
-        {status !== 'DECLINED' && (
+        {status !== 'Declinada' && (
           <Button variant="contained" color="primary" onClick={onRefrescar}>
             Refrescar estado
           </Button>

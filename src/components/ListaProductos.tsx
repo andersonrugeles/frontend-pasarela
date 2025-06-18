@@ -11,7 +11,7 @@ import ModalResumenPago from './Modales/ModalResumen';
 import ModalError from './Modales/ModalError';
 import ModalTransaccion from './Modales/ModalTransaccion';
 import { initialProducto } from '../types/producto';
-import { initialTransaccion, type Transaccion } from '../types/compra';
+import { initialTransaccion, statusLabels, type Transaccion } from '../types/compra';
 
 interface ListaProductosProps {
   productos: Producto[];
@@ -23,7 +23,7 @@ const ListaProductos: React.FC<ListaProductosProps> = ({ productos }) => {
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modalResumen, setModalResumen] = useState(false);
   const [modalTrx, setModalTrx] = useState(false);
-  const [statusTrx, setStatusTrx] = useState('Pendiente');
+  const [statusTrx, setStatusTrx] = useState('PENDING');
   const [modalError, setModalError] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [transaccion, setTransaccion] = useState<Transaccion>(initialTransaccion);
@@ -160,7 +160,7 @@ const ListaProductos: React.FC<ListaProductosProps> = ({ productos }) => {
         open={modalTrx}
         onClose={() => setModalTrx(false)}
         onRefrescar={refreshTrx}
-        status={statusTrx}
+        status={statusLabels[statusTrx]}
       />
     </>
   );
