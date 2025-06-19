@@ -11,7 +11,9 @@ import ModalResumenPago from './Modales/ModalResumen';
 import ModalError from './Modales/ModalError';
 import ModalTransaccion from './Modales/ModalTransaccion';
 import { initialProducto } from '../types/producto';
-import { initialTransaccion, statusLabels, type Transaccion } from '../types/compra';
+import { statusLabels } from '../types/compra';
+import { useAppDispatch, useAppSelector } from '../hooks/hooks';
+import { setTransaccion } from '../store/compraSlice';
 
 interface ListaProductosProps {
   productos: Producto[];
@@ -20,13 +22,14 @@ interface ListaProductosProps {
 const ProductoCardMemo = memo(ProductoCard);
 
 const ListaProductos: React.FC<ListaProductosProps> = ({ productos }) => {
+  const dispatch = useAppDispatch();
+  const transaccion = useAppSelector(state => state.compra.transaccion);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modalResumen, setModalResumen] = useState(false);
   const [modalTrx, setModalTrx] = useState(false);
   const [statusTrx, setStatusTrx] = useState('PENDING');
   const [modalError, setModalError] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [transaccion, setTransaccion] = useState<Transaccion>(initialTransaccion);
   const [datosCliente, setDatosCliente] = useState<Cliente>(initialCliente);
   const [productoSeleccionado, setProductoSeleccionado] = useState<Producto>(initialProducto);
   const [loading, setLoading] = useState(false);
@@ -47,20 +50,27 @@ const ListaProductos: React.FC<ListaProductosProps> = ({ productos }) => {
   const refreshTrx = async () => {
     try {
       setLoading(true)
-      const consultaTransaccion = await consultarTransaccion(transaccion?.id);
 
-      await actualizarCompra({
-        cantidad: productoSeleccionado.cantidad,
-        direccion: datosCliente.direccion,
-        estado: consultaTransaccion?.data?.status,
-        nombreCliente: datosCliente.nombre,
-        total: transaccion.total
-      }, transaccion?.idCompra);
-
-
-      setModalTrx(true);
-      setStatusTrx(consultaTransaccion?.data?.status);
-      setLoading(true);
+      if (transaccion) {
+        const consultaTransaccion = await consultarTransaccion(transaccion?.id);
+        await actualizarCompra({
+          cantidad: productoSeleccionado.cantidad,
+          direccion: datosCliente.direccion,
+          estado: consultaTransaccion?.data?.status,
+          nombreCliente: datosCliente.nombre,
+          total: transaccion?.total
+        }, transaccion?.idCompra);
+        setModalTrx(true);
+        dispatch(
+          setTransaccion({
+            id: transaccion.id,
+            idCompra: transaccion.idCompra,
+            total: transaccion?.total,
+            estado: consultaTransaccion?.data?.status,
+          }),
+        );
+        setStatusTrx(consultaTransaccion?.data?.status);
+      }
 
     } catch (error) {
       setError('No se pudo consultar el estado de la transacción.');
@@ -103,11 +113,14 @@ const ListaProductos: React.FC<ListaProductosProps> = ({ productos }) => {
       });
 
 
-      setTransaccion({
-        id: trx.data?.id,
-        idCompra: respuestaCompra.id,
-        total
-      });
+       dispatch(
+        setTransaccion({
+          id: trx.data.id,
+          idCompra: respuestaCompra.id,
+          total,
+          estado: 'PENDING',
+        }),
+      );
       setModalResumen(false);
       setModalTrx(true);
 

@@ -3,12 +3,9 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 
 export interface Compra {
   id: string;
-  productoId: string;
-  cantidad: number;
-  nombreCliente: string;
-  direccion: string;
+  idCompra: string;
   total: number;
-  estado: string;
+  estado: 'PENDING' | 'APPROVED' | 'DECLINED';
 }
 
 interface CompraState {
